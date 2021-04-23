@@ -4,6 +4,83 @@
   
     
     <entry>
+      <title>Redis的发布订阅和主从复制</title>
+      <link href="2021/04/23/Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
+      <url>2021/04/23/Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/</url>
+      
+        <content type="html"><![CDATA[<h2 id="redis的发布与订阅"><a href="#redis的发布与订阅" class="headerlink" title="redis的发布与订阅"></a>redis的发布与订阅</h2><p><strong>简介：</strong></p><ul><li> 主机数据更新后根据配置和策略，自动同步到从机的master/slave机制，Master以写为主，Slave以读为主（只要有Slave角色那么就不能进行写操作）</li></ul><p><strong>常用命令：</strong></p><ul><li>subscribe channel [channel…]：订阅一个或多个频道的信息</li><li>psubscribe pattern [pattern]：订阅一个或多个符合给定模式的频道。模式以 * 作为通配符，例如：news.* 匹配所有以 news. 开头的频道</li><li>publish chanel message：将信息发送到指定的频道</li></ul><h2 id="redis的主从复制"><a href="#redis的主从复制" class="headerlink" title="redis的主从复制"></a>redis的主从复制</h2><p><strong>常用命令：</strong></p><ul><li>info replication:查看redis服务在集群中的角色等信息</li><li>slaveof 主机ip 主机port：设置某个redis服务为从机</li><li>slaveof no one：断开从机的主从关系</li></ul><h2 id="redis的集群搭建"><a href="#redis的集群搭建" class="headerlink" title="redis的集群搭建"></a>redis的集群搭建</h2><p> <strong>全量复制</strong>：一旦在从机上确定主从关系后，主机上已有的数据会全部同步复制到从机上<br> <strong>增量复制</strong>：在确定了主从关系后，主机在写入数据后会自动将增加的数据同步到从机上</p><p> <strong>redis集群搭建中发生异常的情况和处理方法</strong>：（在一主二从的情况下）</p><ol><li>主机宕机，从机原地待命。主机恢复后，一切又恢复正常。<br>处理方法：在主机宕机后，分配一台从机为主机角色，再设置另一台从机与新主机的主从关系，待原来的主机恢复后，可以设置另一台从机或者新主机为主从关系</li><li>从机宕机，主机少一个从机，其它从机不变。从机恢复后，不再是从机角色</li><li>解决方法：需要重新设置主从关系</li></ol><p> <strong>redis的哨兵模式</strong>：由于主机宕机的时间无法确定，就有了哨兵模式去监视主机，也就是上面所说的主机宕机，从机上位的自动版<br>    操作步骤：</p><ol><li>搭建集群架构</li><li>创建哨兵配置文件：redis安装目下创建配置文件：redis_sentinel.conf。并编辑里边的内容：sentinel monitor 哨兵名称 127.0.0.1 6379 1，表示：指定监控主机的ip地址，port端口，得到哨兵的投票数(当哨兵投票数大于或者等于此数时切换主从关系)</li><li>启动哨兵服务：redis-sentinel redis_sentinel.conf </li></ol><h2 id="Jedis的使用："><a href="#Jedis的使用：" class="headerlink" title="Jedis的使用："></a>Jedis的使用：</h2><p><strong>简介：</strong></p><ul><li>jedis是redis官网提供的提供的操作redis数据的技术。把所有的redis指令都定义成java工具类的方法，方法名和redis的指令名完全一样；开发通过程序访问redis，只需要使用工具类及其方法即可</li></ul><p><strong>操作步骤：</strong></p><ol><li>在maven中添加jedis的依赖</li><li>关闭linux的防火墙（如果是链接linux下的redis）</li><li>创建jedis连接，Jedis jedis=new Jedis(“url”,port);</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Redis </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Redis的环境搭建与相关配置</title>
+      <link href="2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/"/>
+      <url>2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/</url>
+      
+        <content type="html"><![CDATA[<h2 id="redis的网络相关配置"><a href="#redis的网络相关配置" class="headerlink" title="redis的网络相关配置"></a>redis的网络相关配置</h2><ul><li>bind：绑定ip地址，其他机器可以通过此ip地址访问redis，默认绑定127.0.0.1，也可以绑定我们本机的ip地址</li><li> port：绑定redis占用的端口，默认为6379</li><li>tcp-keepalive：tcp连接保活策略，可以通过tcp-keepalive配置项来进行设置，单位为秒，假如设置为60秒，则server端会每60秒向连接空闲的客户端发起一次ACK请求，以检查客户端是否已经挂掉，对于无响应的客户端则会关闭其连接。如果设置为0，则不会进行保活检测</li></ul><h2 id="redis的常规配置"><a href="#redis的常规配置" class="headerlink" title="redis的常规配置"></a>redis的常规配置</h2><ul><li> loglevel：日志级别，开发阶段可以设置成debug，生产阶段通常为notice和warnng</li><li>logfile：指定日志文件名，如果不指定，Redis只进行标准输出。要保证日志文件所在的目录必须存在，文件可以不存在。还要在redis启动时指定所使用的配置文件，否则配置不起作用</li><li>databases：配置Redis数据库的个数，默认是16个</li><li>requirepass：配置Redis的访问密码。默认不配置密码，即访问不需要密码验证。此配置项需要在protected-mode=yes时起作用。使用密码登录客户端：redis-cli -h ip -p 6379 -a pwd<h2 id="redis的RDB配置"><a href="#redis的RDB配置" class="headerlink" title="redis的RDB配置"></a>redis的RDB配置</h2></li><li>简介：Redis 默认的持久化方案。在指定的时间间隔内，执行指定次数的写操作，则会将内存中的数据写入到磁盘中。即在指定目录下生成一个dump.rdb文件。Redis重启会通过加载dump.rdb文件来恢复数据</li><li>Redis会复制一个与当前进程一样的进程。新进程的所有数据（变量、环境变量、程序计数器等）数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程，来进行持久化。<br>整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能。<br>如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。RDB的缺点是最后一次持久化后的数据可能丢失</li><li>save <seconds> <changes>：配置复合的快照触发条件，即Redis 在seconds秒内key改变changes次，Redis把快照内的数据保存到磁盘中一次。默认的策略是：<br>1分钟内改变了1万次<br>或者5分钟内改变了10次<br>或者15分钟内改变了1次<br>如果要禁用Redis的持久化功能，则把所有的save配置都注释掉</li><li>stop-writes-on-bgsave-error：当bgsave快照操作出错时停止写数据到磁盘，这样能保证内存数据和磁盘数据的一致性，但如果不在乎这种一致性，要在bgsave快照操作出错时继续写操作，这里需要配置为no</li><li>rdbcompression：设置对于存储到磁盘中的快照是否进行压缩，设置为yes时，Redis会采用LZF算法进行压缩；如果不想消耗CPU进行压缩的话，可以设置为no，关闭此功能</li><li>rdbchecksum：在存储快照以后，还可以让Redis使用CRC64算法来进行数据校验，但这样会消耗一定的性能，如果系统比较在意性能的提升，可以设置为no，关闭此功能</li><li>dbfilename：Redis持久化数据生成的文件名，默认是dump.rdb，也可以自己配置</li><li>dir：Redis持久化数据生成文件保存的目录，默认是./即redis的启动目录，也可以自己配置<h2 id="redis的AOF配置"><a href="#redis的AOF配置" class="headerlink" title="redis的AOF配置"></a>redis的AOF配置</h2></li><li>简介：Redis 默认不开启。它的出现是为了弥补RDB的不足（数据的不一致性），所以它采用日志的形式来记录每个写操作，并追加到文件中。Redis 重启会根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</li><li>Redis以日志的形式来记录每个写操作，将Redis执行过的所有写指令记录下来(读操作不记录)，<br>只许追加文件但不可以改写文件，redis启动之初会读取该文件重新构建数据，换言之，redis重启的话就根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</li><li>appendonly：配置是否开启AOF，yes表示开启，no表示关闭。默认是no</li><li>appendfilename：AOF保存文件名</li><li>appendfsync：AOF异步持久化策略<br>always：同步持久化，每次发生数据变化会立刻写入到磁盘中。性能较差但数据完整性比较好（慢，安全）<br>everysec：出厂默认推荐，每秒异步记录一次（默认值）<br>no：不即时同步，由操作系统决定何时同步</li><li>no-appendfsync-on rewrite：重写时是否可以运用appendsync，默认no，可以保证数据的安全性</li><li>auto-aof-rewrite-min-size：设置重写的基准值<h2 id="redis的事务配置"><a href="#redis的事务配置" class="headerlink" title="redis的事务配置"></a>redis的事务配置</h2></li><li>简介：允许把一组redis命令放在一起，把命令进行序列化，然后一起执行，保证部分原子性。</li></ul><p> <strong>常用命令：</strong></p><ul><li>multi：用于标记事务的开始， 将后续的命令逐个放入队列中，然后才能使用EXEC命令原子化地执行这个命令序列</li><li>exec：在一个事务中执行所有先前放入队列的命令，然后恢复正常的连接状态。<br>如果在把命令压入队列的过程中报错，则整个队列中的命令都不会执行，执行结果报错；<br>如果在压队列的过程中正常，在执行队列中某一个命令报错，则只会影响本条命令的执行结果，其它命令正常运行； 当使用WATCH命令时，只有当受监控的键没有被修改时，EXEC命令才会执行事务中的命令;而一旦执行了exec命令，之前加的所有watch监控全部取消</li><li>discard：清除所有先前在一个事务中放入队列的命令，并且结束事务。<br>如果使用了WATCH命令，那么DISCARD命令就会将当前连接监控的所有键取消监控</li><li>watch key [key …]：当某个事务需要按条件执行时，就要使用这个命令将给定的键设置为受监控的。如果被监控的key值在本事务外有修改时，则本事务所有指令都不会被执行。Watch命令相当于关系型数据库中的乐观锁</li><li>unwatch：清除所有先前为一个事务监控的键。如果在watch命令之后你调用了EXEC或DISCARD命令，那么就不需要手动调UNWATCH命令</li></ul><p><strong>原理：</strong></p><ul><li>如果一组命令中，有在压入事务队列过程中发生错误的命令，则本事务中所有的命令都不执行，能够保证事务的原子性。<pre><code>  multi</code></pre>  set k3 v3<br>  seta kk vv<br>  set k4 v4<br>  exec<br>如果一组命令中，在压入队列过程中正常，但是在执行事务队列命令时发生了错误，则只会影响发生错误的命令，不会影响其它命令的执行，不能够保证事务的原子性。<pre><code>  multi</code></pre>  set k3 v3<br>  incr k1<br>  set k4 v4<br>  exec</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Reids </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Redis </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Dubbo的环境搭建与使用</title>
+      <link href="2021/04/23/Dubbo%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/"/>
+      <url>2021/04/23/Dubbo%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/</url>
+      
+        <content type="html"><![CDATA[<h2 id="dubbo的环境搭建"><a href="#dubbo的环境搭建" class="headerlink" title="dubbo的环境搭建"></a>dubbo的环境搭建</h2><p>  <strong>dubbo直连的环境搭建</strong><br> 1.创建服务者，并引入相关依赖<br> 2.创建消费者，引入依赖</p><p> <strong>dubbo注册中心的环境搭建</strong><br> 1.创建服务接口，将model类和service类的接口放在其中<br> 2.创建服务者，实现业务接口并引入dubbo的相关依赖<br> 3.创建消费者，编辑视图类并引入dubbo的相关依赖</p><h2 id="dubbo的相关使用信息"><a href="#dubbo的相关使用信息" class="headerlink" title="dubbo的相关使用信息"></a>dubbo的相关使用信息</h2><p>1.dubbo的默认端口号为20880，zookeeper的默认端口号为2181<br>2.开启zookeeper服务，双击zkserve.cmd<br>3.开启监控中心可视化界面，在cmd中输入java -jar dubbo-admin.jar开启</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Dubbo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Dubbo </tag>
+            
+            <tag> Zookeeper </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Springmvc配置模板</title>
       <link href="2021/04/22/Springmvc%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/"/>
       <url>2021/04/22/Springmvc%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/</url>

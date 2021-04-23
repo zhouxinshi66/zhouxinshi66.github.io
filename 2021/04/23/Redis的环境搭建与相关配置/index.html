@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redis的环境搭建与相关配置 | 随风</title><meta name="keywords" content="Redis"><meta name="author" content="周新师"><meta name="copyright" content="周新师"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="redis基本的环境搭建与使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis的环境搭建与相关配置">
+<meta property="og:url" content="http://zhouxinshi66.gitee.io/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="随风">
+<meta property="og:description" content="redis基本的环境搭建与使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp">
+<meta property="article:published_time" content="2021-04-23T01:26:31.000Z">
+<meta property="article:modified_time" content="2021-04-23T01:32:43.018Z">
+<meta property="article:author" content="周新师">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://zhouxinshi66.gitee.io/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: 周新师","link":"链接: ","source":"来源: 随风","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-23 09:32:43'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    })(window)</script><link rel="stylesheet" href="/css/icon.css" media="defer" onload="this.media='all'"><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/avatar.55k0e58phik0.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">随风</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Redis的环境搭建与相关配置</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-23T01:26:31.000Z" title="发表于 2021-04-23 09:26:31">2021-04-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-23T01:32:43.018Z" title="更新于 2021-04-23 09:32:43">2021-04-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Reids/">Reids</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="redis的网络相关配置"><a href="#redis的网络相关配置" class="headerlink" title="redis的网络相关配置"></a>redis的网络相关配置</h2><ul>
+<li>bind：绑定ip地址，其他机器可以通过此ip地址访问redis，默认绑定127.0.0.1，也可以绑定我们本机的ip地址</li>
+<li> port：绑定redis占用的端口，默认为6379</li>
+<li>tcp-keepalive：tcp连接保活策略，可以通过tcp-keepalive配置项来进行设置，单位为秒，假如设置为60秒，则server端会每60秒向连接空闲的客户端发起一次ACK请求，以检查客户端是否已经挂掉，对于无响应的客户端则会关闭其连接。如果设置为0，则不会进行保活检测</li>
+</ul>
+<h2 id="redis的常规配置"><a href="#redis的常规配置" class="headerlink" title="redis的常规配置"></a>redis的常规配置</h2><ul>
+<li> loglevel：日志级别，开发阶段可以设置成debug，生产阶段通常为notice和warnng</li>
+<li>logfile：指定日志文件名，如果不指定，Redis只进行标准输出。要保证日志文件所在的目录必须存在，文件可以不存在。还要在redis启动时指定所使用的配置文件，否则配置不起作用</li>
+<li>databases：配置Redis数据库的个数，默认是16个</li>
+<li>requirepass：配置Redis的访问密码。默认不配置密码，即访问不需要密码验证。此配置项需要在protected-mode=yes时起作用。使用密码登录客户端：redis-cli -h ip -p 6379 -a pwd<h2 id="redis的RDB配置"><a href="#redis的RDB配置" class="headerlink" title="redis的RDB配置"></a>redis的RDB配置</h2></li>
+<li>简介：Redis 默认的持久化方案。在指定的时间间隔内，执行指定次数的写操作，则会将内存中的数据写入到磁盘中。即在指定目录下生成一个dump.rdb文件。Redis重启会通过加载dump.rdb文件来恢复数据</li>
+<li>Redis会复制一个与当前进程一样的进程。新进程的所有数据（变量、环境变量、程序计数器等）数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程，来进行持久化。<br>整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能。<br>如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。RDB的缺点是最后一次持久化后的数据可能丢失</li>
+<li>save <seconds> <changes>：配置复合的快照触发条件，即Redis 在seconds秒内key改变changes次，Redis把快照内的数据保存到磁盘中一次。默认的策略是：<br>1分钟内改变了1万次<br>或者5分钟内改变了10次<br>或者15分钟内改变了1次<br>如果要禁用Redis的持久化功能，则把所有的save配置都注释掉</li>
+<li>stop-writes-on-bgsave-error：当bgsave快照操作出错时停止写数据到磁盘，这样能保证内存数据和磁盘数据的一致性，但如果不在乎这种一致性，要在bgsave快照操作出错时继续写操作，这里需要配置为no</li>
+<li>rdbcompression：设置对于存储到磁盘中的快照是否进行压缩，设置为yes时，Redis会采用LZF算法进行压缩；如果不想消耗CPU进行压缩的话，可以设置为no，关闭此功能</li>
+<li>rdbchecksum：在存储快照以后，还可以让Redis使用CRC64算法来进行数据校验，但这样会消耗一定的性能，如果系统比较在意性能的提升，可以设置为no，关闭此功能</li>
+<li>dbfilename：Redis持久化数据生成的文件名，默认是dump.rdb，也可以自己配置</li>
+<li>dir：Redis持久化数据生成文件保存的目录，默认是./即redis的启动目录，也可以自己配置<h2 id="redis的AOF配置"><a href="#redis的AOF配置" class="headerlink" title="redis的AOF配置"></a>redis的AOF配置</h2></li>
+<li>简介：Redis 默认不开启。它的出现是为了弥补RDB的不足（数据的不一致性），所以它采用日志的形式来记录每个写操作，并追加到文件中。Redis 重启会根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</li>
+<li>Redis以日志的形式来记录每个写操作，将Redis执行过的所有写指令记录下来(读操作不记录)，<br>只许追加文件但不可以改写文件，redis启动之初会读取该文件重新构建数据，换言之，redis重启的话就根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</li>
+<li>appendonly：配置是否开启AOF，yes表示开启，no表示关闭。默认是no</li>
+<li>appendfilename：AOF保存文件名</li>
+<li>appendfsync：AOF异步持久化策略<br>always：同步持久化，每次发生数据变化会立刻写入到磁盘中。性能较差但数据完整性比较好（慢，安全）<br>everysec：出厂默认推荐，每秒异步记录一次（默认值）<br>no：不即时同步，由操作系统决定何时同步</li>
+<li>no-appendfsync-on rewrite：重写时是否可以运用appendsync，默认no，可以保证数据的安全性</li>
+<li>auto-aof-rewrite-min-size：设置重写的基准值<h2 id="redis的事务配置"><a href="#redis的事务配置" class="headerlink" title="redis的事务配置"></a>redis的事务配置</h2></li>
+<li>简介：允许把一组redis命令放在一起，把命令进行序列化，然后一起执行，保证部分原子性。</li>
+</ul>
+<p> <strong>常用命令：</strong></p>
+<ul>
+<li>multi：用于标记事务的开始， 将后续的命令逐个放入队列中，然后才能使用EXEC命令原子化地执行这个命令序列</li>
+<li>exec：在一个事务中执行所有先前放入队列的命令，然后恢复正常的连接状态。<br>如果在把命令压入队列的过程中报错，则整个队列中的命令都不会执行，执行结果报错；<br>如果在压队列的过程中正常，在执行队列中某一个命令报错，则只会影响本条命令的执行结果，其它命令正常运行； 当使用WATCH命令时，只有当受监控的键没有被修改时，EXEC命令才会执行事务中的命令;而一旦执行了exec命令，之前加的所有watch监控全部取消</li>
+<li>discard：清除所有先前在一个事务中放入队列的命令，并且结束事务。<br>如果使用了WATCH命令，那么DISCARD命令就会将当前连接监控的所有键取消监控</li>
+<li>watch key [key …]：当某个事务需要按条件执行时，就要使用这个命令将给定的键设置为受监控的。如果被监控的key值在本事务外有修改时，则本事务所有指令都不会被执行。Watch命令相当于关系型数据库中的乐观锁</li>
+<li>unwatch：清除所有先前为一个事务监控的键。如果在watch命令之后你调用了EXEC或DISCARD命令，那么就不需要手动调UNWATCH命令</li>
+</ul>
+<p><strong>原理：</strong></p>
+<ul>
+<li>如果一组命令中，有在压入事务队列过程中发生错误的命令，则本事务中所有的命令都不执行，能够保证事务的原子性。<pre><code>  multi
+</code></pre>
+  set k3 v3<br>  seta kk vv<br>  set k4 v4<br>  exec<br>如果一组命令中，在压入队列过程中正常，但是在执行事务队列命令时发生了错误，则只会影响发生错误的命令，不会影响其它命令的执行，不能够保证事务的原子性。<pre><code>  multi
+</code></pre>
+  set k3 v3<br>  incr k1<br>  set k4 v4<br>  exec</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">周新师</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://zhouxinshi66.gitee.io/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/">http://zhouxinshi66.gitee.io/2021/04/23/Redis的环境搭建与相关配置/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://zhouxinshi66.gitee.io" target="_blank">随风</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Redis/">Redis</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/pay.7av700m0k9o0.jpg" target="_blank"><img class="post-qr-code-img" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/pay.7av700m0k9o0.jpg" alt="三合一"/></a><div class="post-qr-code-desc">三合一</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/04/23/Dubbo%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/"><img class="prev-cover" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/a2cc7cd98d1001e970ac09f6b20e7bec55e797b2.64oz7giwqac0.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Dubbo的环境搭建与使用</div></div></a></div><div class="next-post pull-right"><a href="/2021/04/23/Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"><img class="next-cover" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Redis的发布订阅和主从复制</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/04/20/Redis常用命令/" title="Redis常用命令"><img class="cover" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-20</div><div class="title">Redis常用命令</div></div></a></div><div><a href="/2021/04/23/Redis的发布订阅和主从复制/" title="Redis的发布订阅和主从复制"><img class="cover" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-23</div><div class="title">Redis的发布订阅和主从复制</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/avatar.55k0e58phik0.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">周新师</div><div class="author-info__description">当你停下来休息的时候，别忘了别人还在奔跑</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zhouxinshi66"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:xinshi.zhou@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="https://blog.csdn.net/qq_44993202?spm=1010.2135.3001.5343" target="_blank" title="CSDN"><i class="iconfont icon-csdn"></i></a><a class="social-icon" href="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/weixin.33fc9y44q6o0.jpg" target="_blank" title="微信"><i class="iconfont icon-weixin"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">Goog Goog Study,Day Day Up</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis%E7%9A%84%E7%BD%91%E7%BB%9C%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">redis的网络相关配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis%E7%9A%84%E5%B8%B8%E8%A7%84%E9%85%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">redis的常规配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis%E7%9A%84RDB%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">redis的RDB配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis%E7%9A%84AOF%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">redis的AOF配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="toc-number">5.</span> <span class="toc-text">redis的事务配置</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/04/23/Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="Redis的发布订阅和主从复制"><img src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis的发布订阅和主从复制"/></a><div class="content"><a class="title" href="/2021/04/23/Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="Redis的发布订阅和主从复制">Redis的发布订阅和主从复制</a><time datetime="2021-04-23T01:27:23.000Z" title="发表于 2021-04-23 09:27:23">2021-04-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/" title="Redis的环境搭建与相关配置"><img src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/redis.232up8ud9s8w.720kc5ubspc0.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis的环境搭建与相关配置"/></a><div class="content"><a class="title" href="/2021/04/23/Redis%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE/" title="Redis的环境搭建与相关配置">Redis的环境搭建与相关配置</a><time datetime="2021-04-23T01:26:31.000Z" title="发表于 2021-04-23 09:26:31">2021-04-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/23/Dubbo%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/" title="Dubbo的环境搭建与使用"><img src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/a2cc7cd98d1001e970ac09f6b20e7bec55e797b2.64oz7giwqac0.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo的环境搭建与使用"/></a><div class="content"><a class="title" href="/2021/04/23/Dubbo%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8/" title="Dubbo的环境搭建与使用">Dubbo的环境搭建与使用</a><time datetime="2021-04-23T01:26:10.000Z" title="发表于 2021-04-23 09:26:10">2021-04-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/22/Springmvc%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/" title="Springmvc配置模板"><img src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/spring-framework.6su0rkqrib40.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Springmvc配置模板"/></a><div class="content"><a class="title" href="/2021/04/22/Springmvc%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/" title="Springmvc配置模板">Springmvc配置模板</a><time datetime="2021-04-22T09:14:38.000Z" title="发表于 2021-04-22 17:14:38">2021-04-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/22/applicationContext-xml%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/" title="applicationContext配置模板"><img src="https://cdn.jsdelivr.net/gh/zhouxinshi66/image-hosting@master/20210422/spring-framework.6su0rkqrib40.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="applicationContext配置模板"/></a><div class="content"><a class="title" href="/2021/04/22/applicationContext-xml%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/" title="applicationContext配置模板">applicationContext配置模板</a><time datetime="2021-04-22T09:10:22.000Z" title="发表于 2021-04-22 17:10:22">2021-04-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By 周新师</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://zhouxinshi.gitee.io">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: '5rGHNkOcHYRA4zebc09DXUes-MdYXbMMI',
+      appKey: 'NwCxNbG4kJujaC9PRoneJPb6',
+      placeholder: '帅的人都会留下自己的昵称和邮箱',
+      avatar: 'robohash',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: true,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+    }
+
+    if (false) { 
+      initData.requiredFields= (''.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign(initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="true"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/assets/koharu.model.json"},"display":{"position":"right","width":145,"height":315,"hOffset":-15,"vOffset":-15},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.8},"log":false});</script></body></html>
